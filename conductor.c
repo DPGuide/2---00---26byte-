@@ -10,12 +10,17 @@ int main() {
     unsigned char* buffer = (unsigned char*) MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, BLOCK_SIZE);
     HANDLE hMutex = CreateMutex(NULL, FALSE, MUTEX_NAME);
 
+    printf("--- INTELLECTUAL PROPERTY: CONDUCTOR ---\n");
+    printf("IGNITING MAX POWER... (Target: 100,000 Frames)\n");
+
     unsigned int tick = 0;
-    // Targeting 100,000 frames
+    
+    // Targeting 100,000 frames (Notice: ID will rollover at 65535!)
     while(tick < 100000) {
         WaitForSingleObject(hMutex, INFINITE);
 
         buffer[0] = 0x2A;
+        
         // Sensor Data (using 7+1 to avoid forbidden index)
         buffer[2] = (unsigned char)(tick >> (7 + 1));
         buffer[3] = (unsigned char)(tick & 0xFF);
@@ -25,17 +30,29 @@ int main() {
         for(int j = 0; j < 21; j++) cs ^= buffer[j];
         buffer[22 - 1] = cs;
 
+        // End Signature
         buffer[25] = 0xFF;
 
         ReleaseMutex(hMutex);
         tick++;
+        
         // NO SLEEP. MAX POWER.
     }
-	// DER SCHLUSSAKKORD: Wir sagen allen, dass wir fertig sind!
+
+    // DER SCHLUSSAKKORD: Wir sagen allen, dass wir fertig sind!
     WaitForSingleObject(hMutex, INFINITE);
     buffer[0] = 0xFF; 
     ReleaseMutex(hMutex);
-	Sleep(100);
+    
+    // Mic Drop (100ms warten, damit Broadcaster/Blackbox es sicher lesen)
+    Sleep(100);
+
+    // Architekten-Hygiene: Sauber aufräumen!
+    UnmapViewOfFile(buffer);
+    CloseHandle(hMap);
+    CloseHandle(hMutex);
+
+    printf("Conductor finished. Stage cleared.\n");
 
     return 0; // Programmende
 }
