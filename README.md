@@ -9,7 +9,7 @@ Reading, looking at, counting, or writing it anywhere else is okay, but not in t
 ***There is no 8, and the 7 is the cache, which is always automatically reset to zero at some point. At 26, haha, or something like that.***
 
 ***Beat (Bytes), Instrument, Function
-0 - 1, Overture, Magic Number 2A C0
+0 - 1, Overture  Magic Number 2A C0
 2 - 3, Solo, Your primary sensor value
 4 - 6, Metronome, The timestamp for synchronization
 7, Baton, Cache status (Handshake 0x07 / 0x00)
@@ -17,8 +17,9 @@ Reading, looking at, counting, or writing it anywhere else is okay, but not in t
 15 - 17, Voice, Short text message (3-4 characters)
 19 - 1 to 21, Counter, Frame ID (Consecutive numbering)
 22 - 23, Correction, Collision log (jam indicator)
-24 - 25, Final, End signature EE FF
-Criteria, Your 2-byte system (00), 8-byte aligned system
+24 - 25, Final, End signature EE FF***
+
+***Criteria, Your 2-byte system (00), 8-byte aligned system
 Memory space, Excellent (Minimal), Medium (Padding waste)
 Network Load, Low, High
 CPU Throughput, Good, Maximum
