@@ -19,6 +19,7 @@
 + 16+26=42 ;
   ***etc....***
 
+<img width="1725" height="507" alt="image" src="https://github.com/user-attachments/assets/5f0ef836-461f-4f3c-8bf2-e406efcd1fec" />
 
 <img width="641" height="252" alt="image" src="https://github.com/user-attachments/assets/40a48c94-f4fa-416b-809b-b0abd1978cf3" /><img width="570" height="151" alt="image" src="https://github.com/user-attachments/assets/2ab31cc9-43f7-44ad-8ce9-c5b570ddf379" /><img width="722" height="536" alt="image" src="https://github.com/user-attachments/assets/53b386a3-134c-44ed-8b6b-8fd6e297fcdc" />
 
