@@ -3,7 +3,7 @@
 
 // 26 is (25 + 1)
 #define B_SIZE (25 + 1)
-#define EXPECTED 60000
+#define EXPECTED 100000
 
 int main() {
     printf("--- INTELLECTUAL PROPERTY: DEEP INTEGRITY SCAN ---\n");

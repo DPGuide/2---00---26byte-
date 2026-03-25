@@ -2,17 +2,18 @@
 #include <stdlib.h>
 #include <windows.h>
 
-#define TOTAL_FRAMES 100000
 #define PACKET_SIZE 26
+#define TOTAL_FRAMES 100000
 
 typedef struct {
-    char name[20];
-    float fps;
+    char name[32]; // Mit dem 32-Byte Architekten-Puffer!
     DWORD time;
+    float fps;
 } TestResult;
 
-TestResult results[4]; 
+TestResult results[5];
 
+// DEINE ERFINDUNG: Der automatische Deep Scan am Ende! (Wieder sauber!)
 void run_integrity_audit() {
     printf("\n[ FINAL STEP ] Initiating Deep Integrity Audit ...\n");
     
@@ -29,66 +30,69 @@ void run_integrity_audit() {
         WaitForSingleObject(pi.hProcess, INFINITE);
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
-        printf("\nIntegrity Audit Completed.\n");
     } else {
         printf("Error: Could not find 'deep_scan.exe'.\n");
     }
 }
 
 void execute_test(int mode_idx) {
-    const char* apps[] = { "conductor.exe", "blackbox.exe", "audience.exe", "net_listener.exe", "chaos_rider.exe" };
-    const char* mode_names[] = { "SOLO RAM", "RAM + DISK", "VRAM LINK", "FULL SYSTEM" };
-    
-    int p_count = 0;
-    if (mode_idx == 0) p_count = 1;
-    else if (mode_idx == 1) p_count = 2;
-    else if (mode_idx == 2) p_count = 1;
-    else p_count = 5;
+    const char* apps[] = { "conductor.exe", "blackbox.exe", "chaos_rider.exe", "net_listener.exe", "broadcaster.exe" };
+    const char* mode_names[] = { "SOLO RAM", "RAM + DISK", "VRAM LINK", "FULL SYSTEM", "NET STREAM" };
 
     PROCESS_INFORMATION pi[5];
     STARTUPINFO si[5];
+    for(int i = 0; i < 5; i++) {
+        ZeroMemory(&si[i], sizeof(si[i]));
+        si[i].cb = sizeof(si[i]);
+    }
 
     printf("[ RUNNING ] %-15s ... ", mode_names[mode_idx]);
 
-    // 1. LOGISTIK-FIX: Zuerst ALLE ZUHÖRER starten (Index 1 bis Ende)
+    int p_count = 0;
+    int active_apps[5];
+
+    // Logistik-Planung für die 5 Stufen
+    if (mode_idx == 0) { p_count = 1; active_apps[0] = 0; } 
+    else if (mode_idx == 1) { p_count = 2; active_apps[0] = 0; active_apps[1] = 1; } 
+    else if (mode_idx == 2) { p_count = 1; active_apps[0] = 0; } 
+    else if (mode_idx == 3) { p_count = 2; active_apps[0] = 0; active_apps[1] = 1; } 
+    else if (mode_idx == 4) { p_count = 3; active_apps[0] = 0; active_apps[1] = 3; active_apps[2] = 4; } // Netz-Test!
+
+    // Zuhörer (Blackbox oder Listener/Broadcaster) ZUERST starten
     for(int i = 1; i < p_count; i++) {
-        ZeroMemory(&si[i], sizeof(si[i]));
-        si[i].cb = sizeof(si[i]);
-        CreateProcess(NULL, (char*)apps[i], NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si[i], &pi[i]);
+        int app_idx = active_apps[i];
+        
+        // In Stufe 4 öffnen wir neue Konsolen, damit du das UDP-Feuerwerk siehst!
+        DWORD flags = (mode_idx == 4) ? CREATE_NEW_CONSOLE : CREATE_NO_WINDOW;
+        CreateProcess(NULL, (char*)apps[app_idx], NULL, NULL, FALSE, flags, NULL, NULL, &si[i], &pi[i]);
     }
 
-    // 2. WARTEN: Gib der Blackbox und Co. 300ms Zeit, hochzufahren und den RAM zu mappen
-    if (p_count > 1) {
-        Sleep(300);
-    }
+    if (p_count > 1) Sleep(300);
 
-    // 3. SHOWTIME: Jetzt erst die Stoppuhr starten und den Dirigenten loslassen!
     DWORD start = GetTickCount();
-    
-    ZeroMemory(&si[0], sizeof(si[0]));
-    si[0].cb = sizeof(si[0]);
+
     CreateProcess(NULL, (char*)apps[0], NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si[0], &pi[0]);
 
-    // VRAM Simulation Pfad
     if (mode_idx == 2) {
         for(int v = 0; v < TOTAL_FRAMES; v++) {
             for(int d = 0; d < 50; d++) { __asm__ __volatile__ ("nop"); }
         }
     }
 
-    // Warte auf den Conductor
+    // 1. Warten bis der Conductor fertig ist
     WaitForSingleObject(pi[0].hProcess, INFINITE);
 
-    // Warte auf die Blackbox (nur in den Modi, wo sie läuft)
-    if (p_count >= 2) {
-        WaitForSingleObject(pi[1].hProcess, 5000);
+    // 2. NEU: Wir warten auch höflich auf die Blackbox und den Listener, 
+    // damit sie ihre Arbeit sauber abschließen können und die .bin Datei nicht korrumpiert!
+    for(int i = 1; i < p_count; i++) {
+        WaitForSingleObject(pi[i].hProcess, 5000); // Maximal 5 Sekunden warten
     }
 
     DWORD end = GetTickCount();
 
-    // Alle restlichen Prozesse beenden
+    // 3. Alles sauber abräumen (jetzt ist es sicher!)
     for(int i = 0; i < p_count; i++) {
-        TerminateProcess(pi[i].hProcess, 0);
+        TerminateProcess(pi[i].hProcess, 0); // Greift nur als Not-Aus
         CloseHandle(pi[i].hProcess);
         CloseHandle(pi[i].hThread);
     }
@@ -105,26 +109,25 @@ void execute_test(int mode_idx) {
 
 int main() {
     printf("--- INTELLECTUAL PROPERTY: COMPLETE SYSTEM AUDIT ---\n");
-    printf("[ READY ] Press ENTER to ignite the 4-stage validation sequence...");
+    printf("[ READY ] Press ENTER to ignite the 5-stage validation sequence...\n");
     getchar();
 
-    for(int m = 0; m < 4; m++) {
-        execute_test(m);
+    for(int i = 0; i < 5; i++) {
+        execute_test(i);
         // Kurze Abkühlung für die CPU zwischen den Tests
         Sleep(500); 
     }
 
-    // Ergebnistabelle ausgeben
-    printf("\nMODUS           | TIME (ms) | FPS       \n");
+    printf("\nMODUS           | TIME (ms) | FPS\n");
     printf("----------------+-----------+-----------\n");
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 5; i++) {
         printf("%-15s | %9lu | %10.2f\n", results[i].name, results[i].time, results[i].fps);
     }
-
+    
     // Der finale Audit (Deep Scan)
     run_integrity_audit();
 
-    printf("\nAudit complete. Press ENTER to close.");
+    printf("\nAudit complete. Press ENTER to close.\n");
     fflush(stdin);
     getchar();
     return 0;
