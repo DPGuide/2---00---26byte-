@@ -19,6 +19,7 @@ int main() {
     unsigned char packet[BLOCK_SIZE];
     printf("CHAOS-RIDER: Starting malicious packet injection...\n\n");
 
+    // 1. PHASE: Die 4 gezielten Angriffe (Die Schleife)
     for(int attack = 0; attack < 4; attack++) {
         // Clear packet with 00
         for(int i = 0; i < BLOCK_SIZE; i++) packet[i] = 0x00;
@@ -54,13 +55,27 @@ int main() {
                 break;
         }
 
+        // Feuer für den aktuellen Angriff frei!
         sendto(s, (char*)packet, BLOCK_SIZE, 0, (struct sockaddr*)&target, sizeof(target));
         
         // Sleep between attacks (Avoid forbidden digit)
         Sleep(700 + 300); 
     }
+    // --- HIER ENDET DIE SCHLEIFE ---
 
-    printf("\nChaos-Rider has finished the assault.\n");
+
+    // 2. PHASE: Der Mic Drop (Poison Pill)
+    printf("\nSending POISON PILL (0xFF) to terminate the Listener...\n");
+    
+    // Paket leeren und den Schlussakkord auf Index 0 setzen
+    for(int i = 0; i < BLOCK_SIZE; i++) packet[i] = 0x00;
+    packet[0] = 0xFF; 
+    
+    // Das finale Signal senden
+    sendto(s, (char*)packet, BLOCK_SIZE, 0, (struct sockaddr*)&target, sizeof(target));
+    Sleep(100); // Kurz warten, damit das Paket sicher ankommt
+
+    printf("Chaos-Rider has finished the assault.\n");
     closesocket(s);
     WSACleanup();
     return 0;
