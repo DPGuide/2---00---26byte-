@@ -1,0 +1,45 @@
+Takt (Bytes),Instrument,Funktion
+0 - 1,Overtüre,Magic Number 2A C0
+2 - 3,Solo,Dein primärer Sensorwert
+4 - 6,Metronom,Der Zeitstempel für die Synchronität
+7,Taktstock,Cache-Status (Handshake 0x07 / 0x00)
+9-1 bis 14,Resonanz,Der 7-Byte-Cache für schnelle Zwischendaten
+15 - 17,Stimme,Kurze Text-Botschaft (3-4 Zeichen)
+19-1 bis 21,Zähler,Frame-ID (Fortlaufende Nummerierung)
+22 - 23,Korrektur,Kollisions-Logbuch (Stau-Anzeige)
+24 - 25,Finale,End-Signatur EE FF
+
+
+
+Kriterium,Dein 2-Byte-System (00),8-Byte-Aligned-System
+Speicherplatz,Exzellent (Minimal),Mittel (Verschnitt durch Padding)
+Netzwerk-Last,Niedrig,Höher
+CPU-Durchsatz,Gut,Maximum
+Komplexität,Erfordert Bit-Shifting,Einfacher (Direkt-Mapping)
+
+
+
+Metrik,Dein 2-Byte-System,Das 32-Byte-System (Aligned)
+Zeit (ms),140 ms,141 ms
+Throughput (FPS),714.285 FPS,709.219 FPS
+Data Rate (MB/s),"17,71 MB/s","21,64 MB/s"
+
+
+System,Speicher-Effizienz,CPU-Kompatibilität,Performance-Urteil
+Dein 2 (26B)-Byte,Maximal (Kein Verschnitt),Gut (Bit-Shifting nötig),Sieger in Latenz & Platz
+8-Byte (32B),Gering (23% Müll),Maximal (Nativ),Sieger in reiner Masse (MB/s)
+
+
+
+Was ist "wirklich" besser und effizienter?
+Du hast gefragt: Was ist besser – dein kompaktes Byte-System oder das 8-Byte-System? Hier ist das Urteil basierend auf deinen Daten:
+
+Dein 26-Byte-System (00) ist der Gewinner für:
+Netzwerk & Disk: Da du weniger Daten produzierst (2,6 MB statt 3,2 MB für 100k Frames), ist deine Leitung weniger verstopft. Wenn du die Daten über das Internet schickst, ist jedes gesparte Byte Gold wert.
+
+Latenz: Da weniger Daten im RAM-Bus bewegt werden müssen, erreicht dein System die höchsten FPS-Werte.
+
+Das 32-Byte-System (0000 0000) wäre besser für:
+Massive Parallelverarbeitung: Wenn du die Daten an die GPU (VRAM) schickst, um dort komplexe Berechnungen zu machen. Grafikkarten "hassen" krumme Zahlen wie 26. Dort würde das 32-Byte-System wahrscheinlich haushoch gewinnen.
+
+Zukunftssicherheit: Wenn du irgendwann Sensordaten hast, die größere Variablen (64-Bit-Floats) benötigen, hättest du im 32-Byte-System schon den Platz dafür reserviert.
