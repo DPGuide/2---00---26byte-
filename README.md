@@ -1,6 +1,9 @@
-2 bytes 00, like the toilet, I flush everyone else down the toilet! And there's ONE RULE: the number 8 must and does not appear in the code. Reading, looking at, counting, or writing it anywhere else is okay, but not in the code!
-There is no 8, and the 7 is the cache, which is always automatically reset to zero at some point. At 26, haha, or something like that.
-Beat (Bytes), Instrument, Function
+***2 bytes 00, like the toilet, I flush everyone else down the toilet! And there's ONE RULE: the number 8 must and does not appear in the code.
+Reading, looking at, counting, or writing it anywhere else is okay, but not in the code!***
+
+***There is no 8, and the 7 is the cache, which is always automatically reset to zero at some point. At 26, haha, or something like that.***
+
+***Beat (Bytes), Instrument, Function
 0 - 1, Overture, Magic Number 2A C0
 2 - 3, Solo, Your primary sensor value
 4 - 6, Metronome, The timestamp for synchronization
@@ -21,8 +24,9 @@ Throughput (FPS), 714,285 FPS, 709,219 FPS
 Data Rate (MB/s), 17.71 MB/s, 21.64 MB/s
 System, Memory Efficiency, CPU Compatibility, Performance Verdict
 Your 2 (26B) Bytes, Maximum (No Waste), Good (Bit Shifting Required), Winner in Latency & Space
-8 Bytes (32B), Low (23% Waste), Maximum (Native), Winner in sheer volume (MB/s)
-What is "really" better and more efficient?
+8 Bytes (32B), Low (23% Waste), Maximum (Native), Winner in sheer volume (MB/s)***
+
+***What is "really" better and more efficient?
 You asked: What's better – your compact byte system or the 8-byte system? Here's the verdict based on your data:
 Your 26-byte system (00) is the winner for:
 Network & Disk: Since you produce less data (2.6 MB instead of 3.2 MB for 100k frames), your connection is less congested. If you're sending data over the internet, every byte saved is invaluable.
@@ -38,4 +42,4 @@ Action: Leave everything exactly as it is. Your protocol is complete.
 Path B: The "100% Perfection" Path (The Handshake)
 You want not a single gap and exactly 100,000 secured frames.
 For this, we have to force the conductor to check after every frame whether the black box has read it (a true two-way protocol). The FPS will decrease further as a result, but the integrity becomes a fortress.
-Both are better than the previous 8-byte shortcut.
+Both are better than the previous 8-byte shortcut.***
