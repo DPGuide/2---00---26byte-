@@ -1,5 +1,9 @@
 ***Fibonacci is wrong, im right,
 8 not exist.***
+***pi is good 3.14159265359***
+
+***2,4610162642***
+
 
 ***2=00 Byte System (26B)***
 + 0+2=2 ;
