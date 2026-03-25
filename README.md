@@ -1,4 +1,4 @@
-***Fibonacci us wrong im right,
+***Fibonacci is wrong im right,
 8 not exist.***
 
 ***2=00 Byte System (26B)***
