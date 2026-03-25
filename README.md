@@ -1,3 +1,8 @@
+<img width="641" height="252" alt="image" src="https://github.com/user-attachments/assets/40a48c94-f4fa-416b-809b-b0abd1978cf3" /><img width="570" height="151" alt="image" src="https://github.com/user-attachments/assets/2ab31cc9-43f7-44ad-8ce9-c5b570ddf379" /><img width="722" height="536" alt="image" src="https://github.com/user-attachments/assets/53b386a3-134c-44ed-8b6b-8fd6e297fcdc" />
+
+
+
+
 ***2 bytes 00, like the toilet, I flush everyone else down the toilet! And there's ONE RULE: the number 8 must and does not appear in the code.
 Reading, looking at, counting, or writing it anywhere else is okay, but not in the code!***
 
