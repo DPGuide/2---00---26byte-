@@ -1,3 +1,6 @@
+***My intellectual property, and yes, it's better.***
+
+
 ***Fibonacci is wrong, im right,
 8 not exist.***
 
