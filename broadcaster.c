@@ -26,14 +26,15 @@ int main() {
     HANDLE hMap = NULL;
     HANDLE hMutex = NULL;
 
-    // Der "Wartezimmer"-Trick: Wir warten geduldig, bis der Dirigent da ist!
+    // FIX: Schreibrechte (ALL_ACCESS) statt nur Lese-Rechte (READ)
     while (!hMap || !hMutex) {
-        hMap = OpenFileMapping(FILE_MAP_READ, FALSE, SHM_NAME);
-        hMutex = OpenMutex(SYNCHRONIZE, FALSE, MUTEX_NAME);
-        if (!hMap || !hMutex) Sleep(10); // Kurz warten und nochmal versuchen
+        if (!hMap) hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
+        if (!hMutex) hMutex = OpenMutex(SYNCHRONIZE, FALSE, MUTEX_NAME);
+        if (!hMap || !hMutex) Sleep(10); 
     }
 
-    unsigned char* buffer = (unsigned char*) MapViewOfFile(hMap, FILE_MAP_READ, 0, 0, BLOCK_SIZE);
+    // FIX: Auch hier Schreibrechte (ALL_ACCESS)
+    unsigned char* buffer = (unsigned char*) MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, BLOCK_SIZE);
 
     printf("Conductor connected! Streaming to Port %d (MAX POWER)...\n\n", PORT);
 
@@ -43,27 +44,29 @@ int main() {
     while(1) {
         WaitForSingleObject(hMutex, INFINITE);
 
-        // DER SCHLUSSAKKORD (Poison Pill)
         if (buffer[0] == 0xFF) {
             sendto(s, (char*)buffer, BLOCK_SIZE, 0, (struct sockaddr*)&target, sizeof(target));
+            buffer[0] = 0xAA; // ENDE-BESTÄTIGUNG ZURÜCK AN DEN CONDUCTOR
             ReleaseMutex(hMutex);
             break; 
         }
 
-        // KORREKT: ID aus Byte 2 und 3 extrahieren
-        unsigned short current_frame = (buffer[2] << (7 + 1)) | buffer[3];
+        if (buffer[0] == 0x2A) {
+            unsigned short current_frame = (buffer[2] << (7 + 1)) | buffer[3];
+            
+            if (current_frame != last_frame) {
+                sendto(s, (char*)buffer, BLOCK_SIZE, 0, (struct sockaddr*)&target, sizeof(target));
+                last_frame = current_frame;
+                sent_count++;
 
-        if (buffer[0] == 0x2A && current_frame != last_frame) {
-            sendto(s, (char*)buffer, BLOCK_SIZE, 0, (struct sockaddr*)&target, sizeof(target));
-            last_frame = current_frame;
-            sent_count++;
+                // --- HIER IST DEIN PING-PONG! ---
+                buffer[0] = 0x00; // "Ich hab's ins Netz geworfen, weiter geht's!"
+                // --------------------------------
+            }
         }
 
         ReleaseMutex(hMutex);
-
-        if (current_frame == last_frame) {
-            Sleep(0); 
-        }
+        Sleep(0); 
     }
 
     printf("Conductor finished. Broadcasted %d packets to the network.\n", sent_count);

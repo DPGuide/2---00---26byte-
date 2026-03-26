@@ -7,7 +7,7 @@
 #define MUTEX_NAME "Local\\MyProtocolMutex"
 
 int main() {
-    HANDLE hMap = OpenFileMapping(FILE_MAP_READ, FALSE, SHM_NAME);
+    HANDLE hMap = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
     HANDLE hMutex = OpenMutex(SYNCHRONIZE, FALSE, MUTEX_NAME);
     unsigned char* buffer = (unsigned char*) MapViewOfFile(hMap, FILE_MAP_ALL_ACCESS, 0, 0, BLOCK_SIZE);
 
