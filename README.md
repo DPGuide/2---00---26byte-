@@ -19,6 +19,9 @@
 + 16+26=42 ;
   ***etc....***
 
+  <img width="572" height="500" alt="image" src="https://github.com/user-attachments/assets/a457b849-af75-46d3-b812-7894bea9f273" />
+
+
   <img width="735" height="527" alt="image" src="https://github.com/user-attachments/assets/2b8e4dbe-9461-4827-8027-84bf1c62f95b" />
 <img width="1869" height="403" alt="image" src="https://github.com/user-attachments/assets/9ef5c705-052f-420d-a404-20d25c3f17eb" />
 
